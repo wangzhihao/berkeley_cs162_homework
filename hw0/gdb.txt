@@ -1,0 +1,81 @@
+• What is the value of infile? (hint: print infile)
+  The result of "print infile" shows the infile is a pointer to FILE object, and its value is the pointer address 0x604010
+    $1 = (FILE *) 0x604010
+
+• What is the object referenced by infile? (hint: *infile)
+  It's a FILE object. 
+• What is the value of ofile? How is it different from that of infile? Why?
+  _flag is different,
+  _fileno is different,
+   _chain is different. 
+• What is the address of the function wc?
+  $4 = {void (FILE *, FILE *, char *)} 0x4006bd <wc> 
+• Try info stack. Explain what you see.
+
+ (gdb) info stack
+#0  wc (ofile=0x604250, infile=0x604010, 
+    inname=0x7fffffffe831 "map.c") at wc.c:10
+#1  0x00000000004007fe in main (argc=3, 
+    argv=0x7fffffffe5d8) at wc.c:35
+
+The stack is also named as "Call Stack", which is mainly used to record the route to the current function, and thus can direct how to come back to the high-level caller function when the current function finishes.
+
+Also FILE object did not store in the stack, while other variables here stores in stack. 
+
+
+• Try info frame. Explain what you see.
+
+(gdb) info frame
+Stack level 0, frame at 0x7fffffffe4c0:
+ rip = 0x4006d1 in wc (wc.c:10); saved rip = 0x4007fe
+ called by frame at 0x7fffffffe500
+ source language c.
+ Arglist at 0x7fffffffe4b0, args: ofile=0x604250, 
+    infile=0x604010, inname=0x7fffffffe831 "map.c"
+ Locals at 0x7fffffffe4b0, Previous frame's sp is 0x7fffffffe4c0
+ Saved registers:
+  rbp at 0x7fffffffe4b0, rip at 0x7fffffffe4b8
+
+sp  stack register
+rbp base register
+rip instruction pointer register
+
+1. The stack variable's address is calculated based on "based register", I.E. rbp + offset
+
+2. When a new function is invoked, we need to save current context and allocate a new space for the new function. We need to know from which should we start a new space for the new function. I.E. "stack register", which always points to the new space(or the toppest used space).
+
+3. instruction pointer, also called program counter, always point to the next instruction to be executed.
+
+4. when switch context between caller function and callee function, some registers like rip, rbp is pushed into stack.
+
+• Try info registers. Which registers are holding aspects of the program that you recognize?
+
+The three registers discussed above: rip rbp sp
+
+(gdb) info registers
+rax            0x604250 6308432
+rbx            0x0      0
+rcx            0x604010 6307856
+rdx            0x7fffffffe831   140737488349233
+rsi            0x604010 6307856
+rdi            0x604250 6308432
+rbp            0x7fffffffe4b0   0x7fffffffe4b0
+rsp            0x7fffffffe470   0x7fffffffe470
+r8             0x4008fe 4196606
+r9             0x240    576
+r10            0x1      1
+r11            0x246    582
+r12            0x4005d0 4195792
+r13            0x7fffffffe5d0   140737488348624
+r14            0x0      0
+r15            0x0      0
+rip            0x4006d1 0x4006d1 <wc+20>
+eflags         0x202    [ IF ]
+cs             0x33     51
+ss             0x2b     43
+ds             0x0      0
+es             0x0      0
+fs             0x0      0
+gs             0x0      0
+
+
