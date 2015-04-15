@@ -1,0 +1,29 @@
+The output is as follows:
+
+_main  @ 0x4005c2
+recur @ 0x40057d
+_main stack: 0x7ffd7984c66c
+static data: 0x601048
+Heap: malloc 1: 0x19dd010
+Heap: malloc 2: 0x19dd080
+recur call 3: stack@ 0x7ffd7984c63c
+recur call 2: stack@ 0x7ffd7984c60c
+recur call 1: stack@ 0x7ffd7984c5dc
+recur call 0: stack@ 0x7ffd7984c5ac
+
+It shows the memory look likes
+--------------
+| prgram code |
+--------------
+| static code |
+--------------
+| heap data   |
+--------------
+| stack data  |
+--------------
+
+The heap is allocated from small address to large address.
+
+The stack is allocated from large address to small address and obeys FILO rules.
+
+The process seems to have 2^32 bits memory space, which should be a virtual memory space.
