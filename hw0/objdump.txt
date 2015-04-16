@@ -28,6 +28,7 @@ wc)
   objdump -xw ./wc.o | grep wc 
   00000000004006bd g     F .text  00000000000000c7              wc
   The vitual address tell us wc is in "LOAD" segment.
+  If we don't distinguish between segment and section, then we can also say wc is in ".text" segment.
 
 • What about main?
 
