@@ -1,0 +1,50 @@
+• What file format is used for this binary? And what architecture is it compiled for?
+
+  File format elf64-x86-64 (Note: elf for  Executable and Linkable Format )
+
+• What are the names of segments you find?
+
+PHDR
+
+INTERP
+
+LOAD
+
+LOAD
+
+DYNAMIC
+
+NOTE
+
+EH_FRAME
+
+STACK
+
+RELRO 
+
+• What segment contains wc (the function) and what is it’s address? (hint: objdump -w wc — grep
+wc)
+
+  objdump -xw ./wc.o | grep wc 
+  00000000004006bd g     F .text  00000000000000c7              wc
+  The vitual address tell us wc is in "LOAD" segment.
+
+• What about main?
+
+  The same as above.
+
+• How do these correspond to what you observed in gdb when you were looking at the loaded,
+executing program?
+
+  The ELF provides information to direct linking process and program loading process.
+
+  The gdb provides a way to inspect the run-time status.
+
+  So they are doing different things. 
+
+  ELF set up a layout in memory for program to execute. When the program executing, it execute in that layout, and gdb can be used to watch changes happened inside the layout.
+
+• Do you see the stack segment anywhere? What about the heap? Explain
+
+  No, they are not explict specified in ELF, they are created by OS kernel implicitly.
+  ELF's task is to link external & missing libraries and map object file to memory. To define the address space of stack and heap is the work of OS kernel.
