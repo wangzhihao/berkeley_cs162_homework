@@ -1,0 +1,66 @@
+• Using objdump on the map executable. Which of the addresses from the previous section are
+defined in the executable, and which segment is each defined in?
+
+The result of running ./map.o
+
+_main  @ 0x4005c2
+recur @ 0x40057d
+_main stack: 0x7fff03f6623c
+static data: 0x601048
+Heap: malloc 1: 0x149c010
+Heap: malloc 2: 0x149c080
+recur call 3: stack@ 0x7fff03f6620c
+recur call 2: stack@ 0x7fff03f661dc
+recur call 1: stack@ 0x7fff03f661ac
+recur call 0: stack@ 0x7fff03f6617c
+
+Three addresses are defined in the executable: 
+  _main  @ 0x4005c2
+  recur @ 0x40057d
+  static data: 0x601048
+
+The first two are in ".text" section, the third one is in ".data" section.
+
+• Make a list of the important segments, and what they are used for.
+
+.text     store the instructions of the program.
+.bss      store uninitialized variables.
+.data     store initialized variables.
+
+
+• What direction is the stack growing in?
+
+ It grows from high address to low address.
+
+• How large is the stack frame for each recursive call?
+
+Stack level 0, frame at 0x7fffffffe480
+Stack level 1, frame at 0x7fffffffe4b0
+Stack level 2, frame at 0x7fffffffe4e0
+
+So the size is 0x40
+
+• Where is the heap? What direction is it growing in?
+
+  From low address to high address.
+
+• Are the two malloc()ed memory areas contiguous?
+  
+No, The sizes of both pieces of memory are 0x64 bytes.
+The first malloc()ed memory occupies [0x149c010, 0x149c074), while the second one occupies [0x149c080, 0x149c0e4).
+So they are not contiguous.
+
+• Make a high level map of the address space for the program containing each of the important
+segments, where they start and end, where the holes are, and what direction things grow in.
+
+      ~  ..... ~
+      +--------+ 0000000000400490
+      | .text  | 
+      +--------+ 0000000000400490 + 262 = 00000000004006f2
+      ~  ..... ~
+      +--------+ 0000000000601038 
+      | .data  | 
+      +--------+ 0000000000601038 + 14 = 000000000060104c
+      | .bss   | 
+      +--------+ 000000000060104c + c = 0000000000601058
+
